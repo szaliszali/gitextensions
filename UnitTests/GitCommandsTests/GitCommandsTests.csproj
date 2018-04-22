@@ -60,6 +60,8 @@
     <Compile Include="FileAssociatedIconProviderTests.cs" />
     <Compile Include="FullPathResolverTests.cs" />
     <Compile Include="ArgumentBuilderTests.cs" />
+    <Compile Include="LocalGitRefListItemTest.cs" />
+    <Compile Include="LocalGitRefListTest.cs" />
     <Compile Include="Git\GitRefNameTests.cs" />
     <Compile Include="RepoNameExtractorTest.cs" />
     <Compile Include="GitModuleTest.cs" />
