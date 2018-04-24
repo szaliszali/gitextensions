@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using GitUIPluginInterfaces;
 using JetBrains.Annotations;
@@ -20,6 +21,8 @@ namespace GitCommands.Git
         {
             _items = result.Lines.Select(l => new Item(l)).ToArray();
         }
+
+        public IReadOnlyList<IGitRef> AllGitRefs => new ReadOnlyCollection<IGitRef>(_items.Select(i => i.Ref).ToList());
 
         [NotNull, ItemNotNull]
         public IReadOnlyList<IGitRef> OrderedBranches(BranchOrdering ordering)
@@ -53,7 +56,7 @@ namespace GitCommands.Git
             }
         }
 
-        public sealed class Item
+        private sealed class Item
         {
             public Item([NotNull]string line)
             {
@@ -67,7 +70,7 @@ namespace GitCommands.Git
             }
 
             public DateTime Date { get; }
-            [NotNull] public GitRef Ref { get; }
+            [NotNull] public IGitRef Ref { get; }
         }
     }
 }

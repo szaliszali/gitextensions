@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Linq;
 using FluentAssertions;
 using GitCommands.Git;
+using GitUIPluginInterfaces;
 using NUnit.Framework;
 
 namespace GitCommandsTests
@@ -11,19 +12,11 @@ namespace GitCommandsTests
         public class LineParsing
         {
             [Test]
-            public void Item_should_parse_time_from_first_column()
-            {
-                var item = CreateItem();
-
-                item.Date.ToUniversalTime().Should().Be(new DateTime(2008, 12, 15, 19, 45, 51));
-            }
-
-            [Test]
             public void Item_should_parse_object_name_from_third_column()
             {
                 var item = CreateItem();
 
-                item.Ref.Guid.Should().Be("943d230ba465d86c3ad2cd00f7e8c508d144d9a5");
+                item.Guid.Should().Be("943d230ba465d86c3ad2cd00f7e8c508d144d9a5");
             }
 
             [Test]
@@ -31,7 +24,7 @@ namespace GitCommandsTests
             {
                 var item = CreateItem();
 
-                item.Ref.CompleteName.Should().Be("refs/tags/0.90");
+                item.CompleteName.Should().Be("refs/tags/0.90");
             }
         }
 
@@ -47,7 +40,7 @@ namespace GitCommandsTests
             {
                 var item = CreateItem(refName);
 
-                item.Ref.IsHead.Should().Be(isBranch);
+                item.IsHead.Should().Be(isBranch);
             }
 
             [Test]
@@ -57,7 +50,7 @@ namespace GitCommandsTests
             {
                 var item = CreateItem(refName);
 
-                item.Ref.Name.Should().Be(expectedName);
+                item.Name.Should().Be(expectedName);
             }
 
             [Test]
@@ -69,7 +62,7 @@ namespace GitCommandsTests
             {
                 var item = CreateItem(refName);
 
-                item.Ref.IsTag.Should().Be(isTag);
+                item.IsTag.Should().Be(isTag);
             }
 
             [Test]
@@ -78,13 +71,18 @@ namespace GitCommandsTests
             {
                 var item = CreateItem(refName);
 
-                item.Ref.Name.Should().Be(expectedName);
+                item.Name.Should().Be(expectedName);
             }
         }
 
-        private static LocalGitRefList.Item CreateItem(string refName = "refs/tags/0.90")
+        private static IGitRef CreateItem(string refName = "refs/tags/0.90")
         {
-            return new LocalGitRefList.Item(@"1229370351 +0100 943d230ba465d86c3ad2cd00f7e8c508d144d9a5 " + refName);
+            return CreateGitRef(@"1229370351 +0100 943d230ba465d86c3ad2cd00f7e8c508d144d9a5 " + refName);
+        }
+
+        private static IGitRef CreateGitRef(string output)
+        {
+            return new LocalGitRefList(new GitCommandResult(output)).AllGitRefs.Single();
         }
     }
 }
